@@ -59,4 +59,6 @@ elixir.extend('bower', function(src, output) {
 
     });
 
+    return this.queueTask('bower');
+
 });
