@@ -1,15 +1,20 @@
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
 var elixir = require('laravel-elixir');
-var plugins = require('gulp-load-plugins')();
+var filter = require('gulp-filter');
+var notify = require('gulp-notify');
+var minify = require('gulp-minify-css');
+var uglify = require('gulp-uglify');
 
 elixir.extend('bower', function(src, output) {
+
+    var config = this;
 
     gulp.task('bower', ['bower-css', 'bower-js']);
 
     gulp.task('bower-css', function () {
         var onError = function (err) {
-            plugins.notify.onError({
+            notify.onError({
                 title: "Laravel Elixir",
                 subtitle: "Bower Files CSS Compilation Failed!",
                 message: "Error: <%= error.message %>",
@@ -20,10 +25,10 @@ elixir.extend('bower', function(src, output) {
         };
 
         return gulp.src(mainBowerFiles())
-            .pipe(plugins.filter('**/*.css'))
-            .pipe(plugins.minifyCss())
+            .pipe(filter('**/*.css'))
+            .pipe(minify())
             .pipe(gulp.dest(output || config.cssOutput))
-            .pipe(plugins.notify({
+            .pipe(notify({
                 title: 'Laravel Elixir',
                 subtitle: 'CSS Bower Files Imported!',
                 icon: __dirname + '/../icons/laravel.png',
@@ -35,7 +40,7 @@ elixir.extend('bower', function(src, output) {
     gulp.task('bower-js', function () {
         var onError = function (err) {
 
-            plugins.notify.onError({
+            notify.onError({
                 title: "Laravel Elixir",
                 subtitle: "Bower Files JS Compilation Failed!",
                 message: "Error: <%= error.message %>",
@@ -46,11 +51,11 @@ elixir.extend('bower', function(src, output) {
         };
 
         return gulp.src(mainBowerFiles())
-            .pipe(plugins.filter('**/*.js'))
-            // .pipe(plugins.concat(config.packageManagment.bower.js.fileName))
-            .pipe(plugins.uglify())
+            .pipe(filter('**/*.js'))
+            // .pipe(concat(config.packageManagment.bower.js.fileName))
+            .pipe(uglify())
             .pipe(gulp.dest(output || config.jsOutput))
-            .pipe(plugins.notify({
+            .pipe(notify({
                 title: 'Laravel Elixir',
                 subtitle: 'Javascript Bower Files Imported!',
                 icon: __dirname + '/../icons/laravel.png',
