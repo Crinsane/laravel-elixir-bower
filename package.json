@@ -9,7 +9,7 @@
   "keywords": [
     "laravel",
     "elixir",
-    "stylus",
+    "bower",
     "gulp"
   ],
   "repository": {
@@ -22,4 +22,7 @@
   "bugs": {
     "url": "https://github.com/Crinsane/laravel-elixir-bower/issues"
   },
+  "dependencies": {
+    "main-bower-files": "^2.1.0"
+  }
 }
