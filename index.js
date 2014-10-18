@@ -5,6 +5,7 @@ var filter = require('gulp-filter');
 var notify = require('gulp-notify');
 var minify = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
+var concat = require('gulp-concat');
 
 elixir.extend('bower', function(src, output) {
 
@@ -26,6 +27,7 @@ elixir.extend('bower', function(src, output) {
 
         return gulp.src(mainBowerFiles())
             .pipe(filter('**/*.css'))
+            .pipe(concat('vendor.css'))
             .pipe(minify())
             .pipe(gulp.dest(output || config.cssOutput))
             .pipe(notify({
@@ -52,7 +54,7 @@ elixir.extend('bower', function(src, output) {
 
         return gulp.src(mainBowerFiles())
             .pipe(filter('**/*.js'))
-            // .pipe(concat(config.packageManagment.bower.js.fileName))
+            .pipe(concat('vendor.js'))
             .pipe(uglify())
             .pipe(gulp.dest(output || config.jsOutput))
             .pipe(notify({
