@@ -7,9 +7,11 @@ var minify = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 
-elixir.extend('bower', function(src, output) {
+elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
 
     var config = this;
+    var cssFile = cssFile || 'vendor.css';
+    var jsFile = jsFile || 'vendor.js';
 
     gulp.task('bower', ['bower-css', 'bower-js']);
 
@@ -26,10 +28,11 @@ elixir.extend('bower', function(src, output) {
         };
 
         return gulp.src(mainBowerFiles())
+            .on('error', onError)
             .pipe(filter('**/*.css'))
-            .pipe(concat('vendor.css'))
+            .pipe(concat(cssFile))
             .pipe(minify())
-            .pipe(gulp.dest(output || config.cssOutput))
+            .pipe(gulp.dest(cssOutput || config.cssOutput))
             .pipe(notify({
                 title: 'Laravel Elixir',
                 subtitle: 'CSS Bower Files Imported!',
@@ -53,10 +56,11 @@ elixir.extend('bower', function(src, output) {
         };
 
         return gulp.src(mainBowerFiles())
+            .on('error', onError)
             .pipe(filter('**/*.js'))
-            .pipe(concat('vendor.js'))
+            .pipe(concat(jsFile))
             .pipe(uglify())
-            .pipe(gulp.dest(output || config.jsOutput))
+            .pipe(gulp.dest(jsOutput || config.jsOutput))
             .pipe(notify({
                 title: 'Laravel Elixir',
                 subtitle: 'Javascript Bower Files Imported!',
