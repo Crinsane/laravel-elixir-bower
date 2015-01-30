@@ -6,14 +6,28 @@ var notify = require('gulp-notify');
 var minify = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var _ = require('lodash');
 
-elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
+elixir.extend('bower', function(options) {
 
     var config = this;
-    var cssFile = cssFile || 'vendor.css';
-    var jsFile = jsFile || 'vendor.js';
+    
+    var options = _.merge({
+        debug: false,
+        css: {
+            file: 'vendor.css',
+            output: config.cssOutput
+        },
+        js: {
+            file: 'vendor.js',
+            output: config.jsOutput
+        },
+        font: {
+            output: 'public/fonts'
+        }
+    }, options);
 
-    gulp.task('bower', ['bower-css', 'bower-js']);
+    gulp.task('bower', ['bower-css', 'bower-js', 'bower-fonts']);
 
     gulp.task('bower-css', function () {
         var onError = function (err) {
@@ -27,12 +41,12 @@ elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles())
+        return gulp.src(mainBowerFiles({debugging: options.debug}))
             .on('error', onError)
             .pipe(filter('**/*.css'))
-            .pipe(concat(cssFile))
+            .pipe(concat(options.css.file))
             .pipe(minify())
-            .pipe(gulp.dest(cssOutput || config.cssOutput))
+            .pipe(gulp.dest(options.css.output))
             .pipe(notify({
                 title: 'Laravel Elixir',
                 subtitle: 'CSS Bower Files Imported!',
@@ -55,12 +69,12 @@ elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles())
+        return gulp.src(mainBowerFiles({debugging: options.debug}))
             .on('error', onError)
             .pipe(filter('**/*.js'))
-            .pipe(concat(jsFile))
+            .pipe(concat(options.js.file))
             .pipe(uglify())
-            .pipe(gulp.dest(jsOutput || config.jsOutput))
+            .pipe(gulp.dest(options.js.output))
             .pipe(notify({
                 title: 'Laravel Elixir',
                 subtitle: 'Javascript Bower Files Imported!',
@@ -69,6 +83,35 @@ elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
             }));
 
     });
+    
+    gulp.task('bower-fonts', function(){
+        
+        var onError = function (err) {
+
+            notify.onError({
+                title: "Laravel Elixir",
+                subtitle: "Bower Files Font Copy Failed!",
+                message: "Error: <%= error.message %>",
+                icon: __dirname + '/../icons/fail.png'
+            })(err);
+
+            this.emit('end');
+        };
+        
+        return gulp.src(mainBowerFiles({
+                debugging: options.debug,
+                filter: (/\.(eot|svg|ttf|woff|otf)$/i)
+            }))
+            .on('error', onError)
+            .pipe(gulp.dest(options.font.output))
+            .pipe(notify({
+                title: 'Laravel Elixir',
+                subtitle: 'Font Bower Files Imported!',
+                icon: __dirname + '/../icons/laravel.png',
+                message: ' '
+            }));
+    });
+    
 
     return this.queueTask('bower');
 
