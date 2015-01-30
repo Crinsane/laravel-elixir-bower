@@ -16,10 +16,10 @@ elixir(function(mix) {
 ```
 
 This will :
-    - scan your bower files
-    - concat all css files in a `public/css/vendor.css` file
-    - concat all js files in a `public/js/vendor.js` file
-    - copy all webfonts in a `fonts/` folder.
+- scan your bower files
+- concat all css files in a `public/css/vendor.css` file
+- concat all js files in a `public/js/vendor.js` file
+- copy all webfonts in a `fonts/` folder.
 
 ### Settings
 
@@ -73,8 +73,8 @@ elixir(function(mix) {
 ```
 
 Those examples doe the same :
-    - scan your bower files
-    - concat all css files in a `public/css/plugins.css` file
-    - concat all js files in a `public/scripts/vendor.js` file
-    - copy all webfonts in a `fonts/` folder.
+- scan your bower files
+- concat all css files in a `public/css/plugins.css` file
+- concat all js files in a `public/scripts/vendor.js` file
+- copy all webfonts in a `fonts/` folder.
 
