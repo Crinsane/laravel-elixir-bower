@@ -3,24 +3,78 @@ laravel-elixir-bower
 
 Elixir Wrapper Around Bower
 
-```
+### Usage
+
+```javascript
 var elixir = require('laravel-elixir');
 
 require('laravel-elixir-bower');
 
 elixir(function(mix) {
-    mix.bower()
-       .routes()
-       .events();
+    mix.bower();
 });
 ```
 
-This will scan your bower files and concat all css files, by default, in a `css/vendor.css` file. And all js files in a `js/vendor.js` file.
+This will :
+    - scan your bower files
+    - concat all css files in a `public/css/vendor.css` file
+    - concat all js files in a `public/js/vendor.js` file
+    - copy all webfonts in a `fonts/` folder.
 
-These settings can be overwriten by passing them to the `bower()` function.
+### Settings
 
+The default settings are the following :
+
+```javascript
+{
+    debug: false,                   // Enable/Disable verbose output
+    css: {
+        file: 'vendor.css',         // Merged CSS file
+        output: config.cssOutput    // Elixir default css output folder (public/css)
+    },
+    js: {
+        file: 'vendor.js',          // Merged JS file
+        output: config.jsOutput     // Elixir default js output folder (public/js)
+    },
+    font: {
+        output: 'public/fonts'      // Web fonts output folder
+    }
+}
 ```
+
+Each setting can be overwritten by passing them as an object to the `bower()` function.
+
+### Examples
+
+```javascript
 elixir(function(mix) {
-    mix.bower('styles.css', 'public/assets/css', 'scripts.js', 'public/assets/js');
+    mix.bower({
+        debug: true,
+        css: {
+            file: 'plugins.css'
+        },
+        js: {
+            output: 'public/scripts'
+        }
+    });
 });
 ```
+
+```javascript
+
+var options = {};
+options.debug = true;
+options.css = {file: 'plugins.css'};
+options.js = {output: 'public/scripts'};
+
+elixir(function(mix) {
+    mix.bower(options);
+});
+```
+
+Those examples doe the same :
+    - scan your bower files
+    - concat all css files in a `public/css/plugins.css` file
+    - concat all js files in a `public/scripts/vendor.js` file
+    - copy all webfonts in a `fonts/` folder.
+
