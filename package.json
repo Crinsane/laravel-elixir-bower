@@ -23,6 +23,7 @@
     "url": "https://github.com/Crinsane/laravel-elixir-bower/issues"
   },
   "dependencies": {
+    "gulp-changed": "^1.1.1",
     "gulp-concat": "^2.4.1",
     "gulp-filter": "^1.0.2",
     "gulp-load-plugins": "^0.7.0",

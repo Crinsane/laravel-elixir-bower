@@ -6,6 +6,7 @@ var notify = require('gulp-notify');
 var minify = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var changed = require('gulp-changed');
 var _ = require('lodash');
 
 elixir.extend('bower', function(options) {
@@ -103,6 +104,7 @@ elixir.extend('bower', function(options) {
                 filter: (/\.(eot|svg|ttf|woff|woff2|otf)$/i)
             }))
             .on('error', onError)
+            .pipe(changed(options.font.output))
             .pipe(gulp.dest(options.font.output))
             .pipe(notify({
                 title: 'Laravel Elixir',
