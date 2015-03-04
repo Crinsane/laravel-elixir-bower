@@ -100,7 +100,7 @@ elixir.extend('bower', function(options) {
         
         return gulp.src(mainBowerFiles({
                 debugging: options.debugging,
-                filter: (/\.(eot|svg|ttf|woff|otf)$/i)
+                filter: (/\.(eot|svg|ttf|woff|woff2|otf)$/i)
             }))
             .on('error', onError)
             .pipe(gulp.dest(options.font.output))
