@@ -13,7 +13,7 @@ elixir.extend('bower', function(options) {
     var config = this;
     
     var options = _.merge({
-        debug: false,
+        debugging: false,
         css: {
             file: 'vendor.css',
             output: config.cssOutput
@@ -41,7 +41,7 @@ elixir.extend('bower', function(options) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles({debugging: options.debug}))
+        return gulp.src(mainBowerFiles({debugging: options.debugging}))
             .on('error', onError)
             .pipe(filter('**/*.css'))
             .pipe(concat(options.css.file))
@@ -69,7 +69,7 @@ elixir.extend('bower', function(options) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles({debugging: options.debug}))
+        return gulp.src(mainBowerFiles({debugging: options.debugging}))
             .on('error', onError)
             .pipe(filter('**/*.js'))
             .pipe(concat(options.js.file))
@@ -99,7 +99,7 @@ elixir.extend('bower', function(options) {
         };
         
         return gulp.src(mainBowerFiles({
-                debugging: options.debug,
+                debugging: options.debugging,
                 filter: (/\.(eot|svg|ttf|woff|otf)$/i)
             }))
             .on('error', onError)

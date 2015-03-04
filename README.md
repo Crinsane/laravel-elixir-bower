@@ -27,7 +27,7 @@ The default settings are the following :
 
 ```javascript
 {
-    debug: false,                   // Enable/Disable verbose output
+    debugging: false,               // Enable/Disable verbose output
     css: {
         file: 'vendor.css',         // Merged CSS file
         output: config.cssOutput    // Elixir default css output folder (public/css)
@@ -49,7 +49,7 @@ Each setting can be overwritten by passing them as an object to the `bower()` fu
 ```javascript
 elixir(function(mix) {
     mix.bower({
-        debug: true,
+        debugging: true,
         css: {
             file: 'plugins.css'
         },
@@ -63,7 +63,7 @@ elixir(function(mix) {
 ```javascript
 
 var options = {};
-options.debug = true;
+options.debugging = true;
 options.css = {file: 'plugins.css'};
 options.js = {output: 'public/scripts'};
 
