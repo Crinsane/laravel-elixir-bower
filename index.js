@@ -38,7 +38,14 @@ elixir.extend('bower', function(options) {
         }
     }, options);
 
-    gulp.task('bower', ['bower-css', 'bower-js', 'bower-fonts', 'bower-imgs']);
+    var files = [];
+
+    if(options.css  !== false) files.push('bower-css');
+    if(options.js   !== false) files.push('bower-js');
+    if(options.font !== false) files.push('bower-fonts');
+    if(options.img  !== false) files.push('bower-imgs');
+
+    gulp.task('bower', files );
 
     gulp.task('bower-css', function () {
         var onError = function (err) {
