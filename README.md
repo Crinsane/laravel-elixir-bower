@@ -20,6 +20,7 @@ This will :
 - concat all css files in a `public/css/vendor.css` file
 - concat all js files in a `public/js/vendor.js` file
 - copy all webfonts in a `fonts/` folder.
+- copy all images in a `imgs/` folder.
 
 ### Settings
 
@@ -38,6 +39,12 @@ The default settings are the following :
     },
     font: {
         output: 'public/fonts'      // Web fonts output folder
+    },
+    img: {
+        output: 'public/imgs',   
+        extInline: ['gif','png'],   // Extensions to inline
+        maxInlineSize: 32 * 1024    // [kB] Inline as data uri images below specified size
+                                    // (use 0 to disable, max 32k on ie8)
     }
 }
 ```
@@ -72,7 +79,7 @@ elixir(function(mix) {
 });
 ```
 
-Those examples doe the same :
+Those examples do the same :
 - scan your bower files
 - concat all css files in a `public/css/plugins.css` file
 - concat all js files in a `public/scripts/vendor.js` file
