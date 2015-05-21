@@ -14,7 +14,7 @@ var getFileSize = require("filesize");
 
 var _ = require('lodash');
 
-elixir.extend('bower', function(options) {
+elixir.extend('bower', function (options) {
 
     var config = this;
     
@@ -22,18 +22,18 @@ elixir.extend('bower', function(options) {
         debugging: false,
         css: {
             file: 'vendor.css',
-            output: config.cssOutput
+            output: config.cssOutput ? config.cssOutput : config.publicDir + '/css'
         },
         js: {
             file: 'vendor.js',
-            output: config.jsOutput
+            output: config.jsOutput ? config.jsOutput : config.publicDir + '/js'
         },
         font: {
-            output: 'public/fonts'
+            output: config.fontOutput ? config.fontOutput : config.publicDir + '/fonts'
         },
         img: {
-            output: 'public/imgs',
-            extInline: [ 'gif', 'png'],
+            output: config.imgOutput ? config.imgOutput : config.publicDir + '/imgs',
+            extInline: ['gif', 'png'],
             maxInlineSize: 32 * 1024 //max 32k on ie8
         }
     }, options);
