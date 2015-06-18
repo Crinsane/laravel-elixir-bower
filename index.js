@@ -1,7 +1,6 @@
 var gulp = require('gulp');
 var mainBowerFiles = require('main-bower-files');
 var elixir = require('laravel-elixir');
-var filter = require('gulp-filter');
 var notify = require('gulp-notify');
 var minify = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
@@ -27,9 +26,8 @@ elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles())
+        return gulp.src(mainBowerFiles('**/*.css'))
             .on('error', onError)
-            .pipe(filter('**/*.css'))
             .pipe(concat(cssFile))
             .pipe(minify())
             .pipe(gulp.dest(cssOutput || config.cssOutput))
@@ -55,9 +53,8 @@ elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles())
+        return gulp.src(mainBowerFiles('**/*.js'))
             .on('error', onError)
-            .pipe(filter('**/*.js'))
             .pipe(concat(jsFile))
             .pipe(uglify())
             .pipe(gulp.dest(jsOutput || config.jsOutput))
