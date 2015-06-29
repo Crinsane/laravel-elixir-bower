@@ -21,10 +21,12 @@ elixir.extend('bower', function (options) {
     var options = _.merge({
         debugging: false,
         css: {
+            minify : true,
             file: 'vendor.css',
             output: config.cssOutput ? config.cssOutput : config.publicDir + '/css'
         },
         js: {
+            uglify : true,
             file: 'vendor.js',
             output: config.jsOutput ? config.jsOutput : config.publicDir + '/js'
         },
@@ -61,7 +63,7 @@ elixir.extend('bower', function (options) {
                 debug: options.debugging,
             })))
             .pipe(concat(options.css.file))
-            .pipe(minify())
+            .pipe(test(options.css.minify,minify()))
             .pipe(gulp.dest(options.css.output))
             .pipe(notify({
                 title: 'Laravel Elixir',
@@ -89,7 +91,7 @@ elixir.extend('bower', function (options) {
             .on('error', onError)
             .pipe(filter('**/*.js'))
             .pipe(concat(options.js.file))
-            .pipe(uglify())
+            .pipe(test(options.js.uglify,uglify()))
             .pipe(gulp.dest(options.js.output))
             .pipe(notify({
                 title: 'Laravel Elixir',
