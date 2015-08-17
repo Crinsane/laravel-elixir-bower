@@ -1,6 +1,6 @@
 {
   "name": "laravel-elixir-bower",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Laravel Elixir Bower Extension",
   "main": "index.js",
   "scripts": {
@@ -36,5 +36,8 @@
     "gulp-if" :"^1.2.5",
     "gulp-ignore" :"^1.2.1",
     "filesize":"^2.0.0"
+  },
+  "peerDependencies":{
+    "laravel-elixir":"^2.0"
   }
 }
