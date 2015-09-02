@@ -12,29 +12,30 @@ var test = require('gulp-if');
 var ignore = require('gulp-ignore');
 var getFileSize = require("filesize");
 
+var config = elixir.config;
+
+
 var _ = require('lodash');
 
 elixir.extend('bower', function (options) {
 
-    var config = this;
-    
     var options = _.merge({
         debugging: false,
         css: {
             minify : true,
             file: 'vendor.css',
-            output: config.cssOutput ? config.cssOutput : config.publicDir + '/css'
+            output: config.css.outputFolder ? config.css.outputFolder : config.publicPath + '/css'
         },
         js: {
             uglify : true,
             file: 'vendor.js',
-            output: config.jsOutput ? config.jsOutput : config.publicDir + '/js'
+            output: config.js.outputFolder ? config.js.outputFolder : config.publicPath + '/js'
         },
         font: {
-            output: config.fontOutput ? config.fontOutput : config.publicDir + '/fonts'
+            output: config.font.outputFolder ? config.font.outputFolder : config.publicPath + '/fonts'
         },
         img: {
-            output: config.imgOutput ? config.imgOutput : config.publicDir + '/imgs',
+            output: config.img.outputFolder ? config.img.outputFolder : config.publicPath + '/imgs',
             extInline: ['gif', 'png'],
             maxInlineSize: 32 * 1024 //max 32k on ie8
         }
