@@ -25,18 +25,18 @@ elixir.extend('bower', function (options) {
         css: {
             minify : true,
             file: 'vendor.css',
-            output: config.css.outputFolder ? config.css.outputFolder : config.publicPath + '/css'
+            output: config.css.outputFolder ? config.publicPath + '/' + config.css.outputFolder : config.publicPath + '/css'
         },
         js: {
             uglify : true,
             file: 'vendor.js',
-            output: config.js.outputFolder ? config.js.outputFolder : config.publicPath + '/js'
+            output: config.js.outputFolder ? config.publicPath + '/' + config.js.outputFolder : config.publicPath + '/js'
         },
         font: {
-            output: (config.font && config.font.outputFolder) ? config.font.outputFolder : config.publicPath + '/fonts'
+            output: (config.font && config.font.outputFolder) ? config.publicPath + '/' + config.font.outputFolder : config.publicPath + '/fonts'
         },
         img: {
-            output: (config.img && config.img.outputFolder) ? config.img.outputFolder : config.publicPath + '/imgs',
+            output: (config.img && config.img.outputFolder) ? config.publicPath + '/' + config.img.outputFolder : config.publicPath + '/imgs',
             extInline: ['gif', 'png'],
             maxInlineSize: 32 * 1024 //max 32k on ie8
         }
@@ -49,7 +49,9 @@ elixir.extend('bower', function (options) {
     if(options.font !== false) files.push('bower-fonts');
     if(options.img  !== false) files.push('bower-imgs');
 
-    gulp.task('bower', files );
+    new task('bower', function () {
+        return gulp.start(files);
+    });
 
     gulp.task('bower-css', function () {
         var onError = function (err) {
@@ -182,10 +184,6 @@ elixir.extend('bower', function (options) {
                 message: ' '
             }));
 
-    });
-
-    new task('bower',function(){
-        return gulp.start('bower');
     });
 
 });
