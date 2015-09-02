@@ -12,6 +12,7 @@ var test = require('gulp-if');
 var ignore = require('gulp-ignore');
 var getFileSize = require("filesize");
 
+var task = elixir.Task;
 var config = elixir.config;
 
 
@@ -175,8 +176,9 @@ elixir.extend('bower', function (options) {
             }));
 
     });
-    
 
-    return this.queueTask('bower');
+    new task('bower',function(){
+        return gulp.start('bower');
+    });
 
 });
