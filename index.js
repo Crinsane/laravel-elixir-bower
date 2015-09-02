@@ -33,10 +33,10 @@ elixir.extend('bower', function (options) {
             output: config.js.outputFolder ? config.js.outputFolder : config.publicPath + '/js'
         },
         font: {
-            output: config.font.outputFolder ? config.font.outputFolder : config.publicPath + '/fonts'
+            output: (config.font && config.font.outputFolder) ? config.font.outputFolder : config.publicPath + '/fonts'
         },
         img: {
-            output: config.img.outputFolder ? config.img.outputFolder : config.publicPath + '/imgs',
+            output: (config.img && config.img.outputFolder) ? config.img.outputFolder : config.publicPath + '/imgs',
             extInline: ['gif', 'png'],
             maxInlineSize: 32 * 1024 //max 32k on ie8
         }
