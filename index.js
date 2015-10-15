@@ -12,35 +12,46 @@ var test = require('gulp-if');
 var ignore = require('gulp-ignore');
 var getFileSize = require("filesize");
 
+var task = elixir.Task;
+var config = elixir.config;
+
+
 var _ = require('lodash');
 
 elixir.extend('bower', function (options) {
 
-    var config = this;
-    
     var options = _.merge({
         debugging: false,
         css: {
             minify : true,
             file: 'vendor.css',
-            output: config.cssOutput ? config.cssOutput : config.publicDir + '/css'
+            output: config.css.outputFolder ? config.publicPath + '/' + config.css.outputFolder : config.publicPath + '/css'
         },
         js: {
             uglify : true,
             file: 'vendor.js',
-            output: config.jsOutput ? config.jsOutput : config.publicDir + '/js'
+            output: config.js.outputFolder ? config.publicPath + '/' + config.js.outputFolder : config.publicPath + '/js'
         },
         font: {
-            output: config.fontOutput ? config.fontOutput : config.publicDir + '/fonts'
+            output: (config.font && config.font.outputFolder) ? config.publicPath + '/' + config.font.outputFolder : config.publicPath + '/fonts'
         },
         img: {
-            output: config.imgOutput ? config.imgOutput : config.publicDir + '/imgs',
+            output: (config.img && config.img.outputFolder) ? config.publicPath + '/' + config.img.outputFolder : config.publicPath + '/imgs',
             extInline: ['gif', 'png'],
             maxInlineSize: 32 * 1024 //max 32k on ie8
         }
     }, options);
 
-    gulp.task('bower', ['bower-css', 'bower-js', 'bower-fonts', 'bower-imgs']);
+    var files = [];
+
+    if(options.css  !== false) files.push('bower-css');
+    if(options.js   !== false) files.push('bower-js');
+    if(options.font !== false) files.push('bower-fonts');
+    if(options.img  !== false) files.push('bower-imgs');
+
+    new task('bower', function () {
+        return gulp.start(files);
+    });
 
     gulp.task('bower-css', function () {
         var onError = function (err) {
@@ -174,8 +185,5 @@ elixir.extend('bower', function (options) {
             }));
 
     });
-    
-
-    return this.queueTask('bower');
 
 });

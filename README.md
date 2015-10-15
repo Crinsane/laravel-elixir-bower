@@ -51,6 +51,8 @@ The default settings are the following :
 
 Each setting can be overwritten by passing them as an object to the `bower()` function.
 
+Any setting can also be set to `false` to prevent generation and output of those files.
+
 ### Examples
 
 ```javascript
@@ -85,3 +87,27 @@ Those examples do the same :
 - concat all js files in a `public/scripts/vendor.js` file
 - copy all webfonts in a `fonts/` folder.
 
+```javascript
+elixir(function(mix) {
+    mix.bower({
+        debugging: true,
+        css: false,
+        js: false,
+        font: {
+            output: 'public/fonts'
+        },
+        img: {
+            output: 'public/css',
+            extInline: ['gif', 'png'],   // Extensions to inline
+            maxInlineSize: 32 * 1024    // [kB] Inline as data uri images below specified size
+                                        // (use 0 to disable, max 32k on ie8)
+        }
+    });
+});
+```
+This example does the following:
+- scan your bower files
+- skips css and js files
+- copy all webfonts in a `public/fonts/` folder.
+- copy all gif or png images into `public/css` folder.
+- inline any of those images which are smaller than 32k.
