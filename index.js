@@ -76,12 +76,7 @@ elixir.extend('bower', function (options) {
             .pipe(concat(options.css.file))
             .pipe(test(options.css.minify,minify()))
             .pipe(gulp.dest(options.css.output))
-            .pipe(notify({
-                title: 'Laravel Elixir',
-                subtitle: 'CSS Bower Files Imported!',
-                icon: __dirname + '/../icons/laravel.png',
-                message: 'CSS Bower Files Imported!'
-            }));
+            .pipe(new elixir.Notification('CSS Bower Files Imported!'));
 
     });
 
@@ -104,12 +99,7 @@ elixir.extend('bower', function (options) {
             .pipe(concat(options.js.file))
             .pipe(test(options.js.uglify,uglify()))
             .pipe(gulp.dest(options.js.output))
-            .pipe(notify({
-                title: 'Laravel Elixir',
-                subtitle: 'Javascript Bower Files Imported!',
-                icon: __dirname + '/../icons/laravel.png',
-                message: 'Javascript Bower Files Imported!'
-            }));
+            .pipe(new elixir.Notification('Javascript Bower Files Imported!'));
 
     });
     
@@ -126,7 +116,7 @@ elixir.extend('bower', function (options) {
 
             this.emit('end');
         };
-        
+ 
         return gulp.src(mainBowerFiles({
                 debugging: options.debugging,
                 filter: (/\.(eot|svg|ttf|woff|woff2|otf)$/i)
@@ -134,12 +124,7 @@ elixir.extend('bower', function (options) {
             .on('error', onError)
             .pipe(changed(options.font.output))
             .pipe(gulp.dest(options.font.output))
-            .pipe(notify({
-                title: 'Laravel Elixir',
-                subtitle: 'Font Bower Files Imported!',
-                icon: __dirname + '/../icons/laravel.png',
-                message: 'Font Bower Files Imported!'
-            }));
+            .pipe(new elixir.Notification('Font Bower Files Imported!'));
     });
 
     gulp.task('bower-imgs', function () {
@@ -177,11 +162,7 @@ elixir.extend('bower', function (options) {
             .pipe(ignore.exclude(isInline)) // Exclude inlined images
             .pipe(changed(options.img.output))
             .pipe(gulp.dest(options.img.output))
-            .pipe(notify({
-                title: 'Laravel Elixir',
-                icon: __dirname + '/../icons/laravel.png',
-                message:  'Images Bower Files Imported!'
-            }));
+            .pipe(new elixir.Notification('Images Bower Files Imported!'));
 
     });
 
