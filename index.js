@@ -58,7 +58,7 @@ elixir.extend('bower', function (options) {
             notify.onError({
                 title: "Laravel Elixir",
                 subtitle: "Bower Files CSS Compilation Failed!",
-                message: "Error: <%= error.message %>",
+                message: "Bower Files CSS Compilation Failed! Error: <%= error.message %>",
                 icon: __dirname + '/../icons/fail.png'
             })(err);
 
@@ -80,7 +80,7 @@ elixir.extend('bower', function (options) {
                 title: 'Laravel Elixir',
                 subtitle: 'CSS Bower Files Imported!',
                 icon: __dirname + '/../icons/laravel.png',
-                message: ' '
+                message: 'CSS Bower Files Imported!'
             }));
 
     });
@@ -91,7 +91,7 @@ elixir.extend('bower', function (options) {
             notify.onError({
                 title: "Laravel Elixir",
                 subtitle: "Bower Files JS Compilation Failed!",
-                message: "Error: <%= error.message %>",
+                message: "Bower Files JS Compilation Failed! Error: <%= error.message %>",
                 icon: __dirname + '/../icons/fail.png'
             })(err);
 
@@ -108,7 +108,7 @@ elixir.extend('bower', function (options) {
                 title: 'Laravel Elixir',
                 subtitle: 'Javascript Bower Files Imported!',
                 icon: __dirname + '/../icons/laravel.png',
-                message: ' '
+                message: 'Javascript Bower Files Imported!'
             }));
 
     });
@@ -120,7 +120,7 @@ elixir.extend('bower', function (options) {
             notify.onError({
                 title: "Laravel Elixir",
                 subtitle: "Bower Files Font Copy Failed!",
-                message: "Error: <%= error.message %>",
+                message: "Bower Files Font Copy Failed! Error: <%= error.message %>",
                 icon: __dirname + '/../icons/fail.png'
             })(err);
 
@@ -138,7 +138,7 @@ elixir.extend('bower', function (options) {
                 title: 'Laravel Elixir',
                 subtitle: 'Font Bower Files Imported!',
                 icon: __dirname + '/../icons/laravel.png',
-                message: ' '
+                message: 'Font Bower Files Imported!'
             }));
     });
 
@@ -149,7 +149,7 @@ elixir.extend('bower', function (options) {
             notify.onError({
                 title: "Laravel Elixir",
                 subtitle: "Bower Files Images Copy Failed!",
-                message: "Error: <%= error.message %>",
+                message: "Bower Files Images Copy Failed! Error: <%= error.message %>",
                 icon: __dirname + '/../icons/fail.png'
             })(err);
 
@@ -179,9 +179,8 @@ elixir.extend('bower', function (options) {
             .pipe(gulp.dest(options.img.output))
             .pipe(notify({
                 title: 'Laravel Elixir',
-                subtitle: 'Images Bower Files Imported!',
                 icon: __dirname + '/../icons/laravel.png',
-                message: ' '
+                message:  'Images Bower Files Imported!'
             }));
 
     });
