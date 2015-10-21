@@ -10,7 +10,7 @@ var changed = require('gulp-changed');
 var base64 = require('gulp-base64');
 var test = require('gulp-if');
 var ignore = require('gulp-ignore');
-var getFileSize = require("filesize");
+var filesize = require('filesize');
 
 var task = elixir.Task;
 var config = elixir.config;
@@ -143,15 +143,15 @@ elixir.extend('bower', function (options) {
 
         var isInline = function (file) {
             
-            var filesize = file.stat ? getFileSize(file.stat.size) : getFileSize(Buffer.byteLength(String(file.contents)));
-            var fileext = file.path.split('.').pop();
+            var fsize = file.stat ? filesize(file.stat.size) : filesize(Buffer.byteLength(String(file.contents)));
+            var fext = file.path.split('.').pop();
             
             if (options.debugging)
             {
-                console.log("Size of file:" + file.path + " (" + 1024*parseFloat(filesize) +" / max="+options.img.maxInlineSize+")");
+                console.log("Size of file:" + file.path + " (" + 1024*parseFloat(fsize) +" / max="+options.img.maxInlineSize+")");
             }
             
-            return options.img.extInline.indexOf(fileext) > -1 && 1024*parseFloat(filesize) < options.img.maxInlineSize;
+            return options.img.extInline.indexOf(fext) > -1 && 1024*parseFloat(fsize) < options.img.maxInlineSize;
         }
 
         return gulp.src(mainBowerFiles({
