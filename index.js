@@ -14,6 +14,7 @@ var filesize = require('filesize');
 
 var task = elixir.Task;
 var config = elixir.config;
+var notification = elixir.Notification;
 
 
 var _ = require('lodash');
@@ -76,7 +77,7 @@ elixir.extend('bower', function (options) {
             .pipe(concat(options.css.file))
             .pipe(test(options.css.minify,minify()))
             .pipe(gulp.dest(options.css.output))
-            .pipe(new elixir.Notification('CSS Bower Files Imported!'));
+            .pipe(new notification('CSS Bower Files Imported!'));
 
     });
 
@@ -99,7 +100,7 @@ elixir.extend('bower', function (options) {
             .pipe(concat(options.js.file))
             .pipe(test(options.js.uglify,uglify()))
             .pipe(gulp.dest(options.js.output))
-            .pipe(new elixir.Notification('Javascript Bower Files Imported!'));
+            .pipe(new notification('Javascript Bower Files Imported!'));
 
     });
     
@@ -124,7 +125,7 @@ elixir.extend('bower', function (options) {
             .on('error', onError)
             .pipe(changed(options.font.output))
             .pipe(gulp.dest(options.font.output))
-            .pipe(new elixir.Notification('Font Bower Files Imported!'));
+            .pipe(new notification('Font Bower Files Imported!'));
     });
 
     gulp.task('bower-imgs', function () {
@@ -162,7 +163,7 @@ elixir.extend('bower', function (options) {
             .pipe(ignore.exclude(isInline)) // Exclude inlined images
             .pipe(changed(options.img.output))
             .pipe(gulp.dest(options.img.output))
-            .pipe(new elixir.Notification('Images Bower Files Imported!'));
+            .pipe(new notification('Images Bower Files Imported!'));
 
     });
 
