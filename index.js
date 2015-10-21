@@ -10,10 +10,11 @@ var changed = require('gulp-changed');
 var base64 = require('gulp-base64');
 var test = require('gulp-if');
 var ignore = require('gulp-ignore');
+var rewrite = require('gulp-rewrite-css');
 var filesize = require('filesize');
-var rework = require('rework');		 
-var path = require('path');		
+var path = require('path');
 var validator = require('validator');
+var isAbsolute = require('is-absolute-url');
 
 var task = elixir.Task;
 var config = elixir.config;
@@ -26,146 +27,153 @@ elixir.extend('bower', function (options) {
     var options = _.merge({
         debugging: false,
         css: {
-            minify : true,
+            minify: true,
             file: 'vendor.css',
+            extInline: ['gif', 'png' ],
+            maxInlineSize: 32 * 1024, //max 32k on ie8
             output: config.css.outputFolder ? config.publicPath + '/' + config.css.outputFolder : config.publicPath + '/css'
         },
         js: {
-            uglify : true,
+            uglify: true,
             file: 'vendor.js',
             output: config.js.outputFolder ? config.publicPath + '/' + config.js.outputFolder : config.publicPath + '/js'
         },
         font: {
-            output: (config.font && config.font.outputFolder) ? config.publicPath + '/' + config.font.outputFolder : config.publicPath + '/fonts'
+            output: (config.font && config.font.outputFolder) ? config.publicPath + '/' + config.font.outputFolder : config.publicPath + '/fonts',
+            filter: /\.(eot|svg|ttf|woff|woff2|otf)$/i
         },
         img: {
             output: (config.img && config.img.outputFolder) ? config.publicPath + '/' + config.img.outputFolder : config.publicPath + '/imgs',
-            extInline: ['gif', 'png'],
-            maxInlineSize: 32 * 1024 //max 32k on ie8
+            filter: /\.(png|bmp|gif|jpg|jpeg)$/i
+
         }
     }, options);
 
     var files = [];
 
-    if(options.css  !== false) files.push('bower-css');
-    if(options.js   !== false) files.push('bower-js');
-    if(options.font !== false) files.push('bower-fonts');
-    if(options.img  !== false) files.push('bower-imgs');
+    if (options.css !== false)
+        files.push('bower-css');
+    if (options.js !== false)
+        files.push('bower-js');
+    if (options.font !== false)
+        files.push('bower-fonts');
+    if (options.img !== false)
+        files.push('bower-imgs');
 
     new task('bower', function () {
         return gulp.start(files);
     });
 
-    gulp.task('bower-css', function () {
-        var onError = function (err) {
-            notify.onError({
-                title: "Laravel Elixir",
-                subtitle: "Bower Files CSS Compilation Failed!",
-                message: "Bower Files CSS Compilation Failed! Error: <%= error.message %>",
-                icon: __dirname + '/../icons/fail.png'
-            })(err);
+    var isInline = function (file) {
 
+        var fsize = file.stat ? filesize(file.stat.size) : filesize(Buffer.byteLength(String(file.contents)));
+        var fext = file.path.split('.').pop();
+
+        if (options.debugging)
+            console.log("Size of file:" + file.path + " (" + 1024 * parseFloat(fsize) + " / max=" + options.css.maxInlineSize + ")");
+
+        return options.css.extInline.indexOf(fext) > -1 && 1024 * parseFloat(fsize) < options.css.maxInlineSize;
+    }
+
+    gulp.task('bower-css', function () {
+
+        var onError = function (err) {
+            new notification().error(err, "Bower Files CSS Compilation Failed! Error: <%= error.message %>");
             this.emit('end');
         };
 
+        var rebase = function (context) {
+
+            if (isAbsolute(context.targetFile) || validator.isURL(context.targetFile) || context.targetFile.indexOf('data:image') === 0) {
+                return context.targetFile;
+            }
+
+            var absolutePath = context.targetFile.split('?').shift();
+
+            var p = "";
+
+            if (absolutePath.match(options.font.filter))
+                p = path.relative(context.destinationDir, process.cwd() + '/' + options.font.output + '/' + context.targetFile.split('/').pop());
+
+            if (absolutePath.match(options.img.filter))
+                p = path.relative(context.destinationDir, process.cwd() + '/' + options.img.output + '/' + context.targetFile.split('/').pop());
+
+            if (process.platform === 'win32')
+                p = p.replace(/\\/g, '/');
+
+            return p;
+
+        };
+
+
+
         return gulp.src(bowerfiles({debugging: options.debugging}))
-            .on('error', onError)
-            .pipe(filter('**/*.css'))
-            .pipe(test(options.img.maxInlineSize > 0, base64({
-                extensions: options.img.extInline,
-                maxImageSize: options.img.maxInlineSize, // bytes 
-                debug: options.debugging,
-            })))
-            .pipe(concat(options.css.file))
-            .pipe(test(options.css.minify,minify()))
-            .pipe(gulp.dest(options.css.output))
-            .pipe(new notification('CSS Bower Files Imported!'));
+                .on('error', onError)
+                .pipe(filter('**/*.css'))
+                .pipe(test(options.css.maxInlineSize > 0, base64({
+                    extensions: options.css.extInline,
+                    maxImageSize: options.css.maxInlineSize, // bytes 
+                    debug: options.debugging,
+                })))
+                .pipe(rewrite({destination: options.css.output, debug: options.debugging, adaptPath: rebase}))
+                .pipe(concat(options.css.file))
+                .pipe(test(options.css.minify, minify()))
+                .pipe(gulp.dest(options.css.output))
+                .pipe(new notification('CSS Bower Files Imported!'));
 
     });
 
     gulp.task('bower-js', function () {
+
         var onError = function (err) {
-
-            notify.onError({
-                title: "Laravel Elixir",
-                subtitle: "Bower Files JS Compilation Failed!",
-                message: "Bower Files JS Compilation Failed! Error: <%= error.message %>",
-                icon: __dirname + '/../icons/fail.png'
-            })(err);
-
+            new notification().error(err, "Bower Files JS Compilation Failed! Error: <%= error.message %>");
             this.emit('end');
         };
 
         return gulp.src(bowerfiles({debugging: options.debugging}))
-            .on('error', onError)
-            .pipe(filter('**/*.js'))
-            .pipe(concat(options.js.file))
-            .pipe(test(options.js.uglify,uglify()))
-            .pipe(gulp.dest(options.js.output))
-            .pipe(new notification('Javascript Bower Files Imported!'));
+                .on('error', onError)
+                .pipe(filter('**/*.js'))
+                .pipe(concat(options.js.file))
+                .pipe(test(options.js.uglify, uglify()))
+                .pipe(gulp.dest(options.js.output))
+                .pipe(new notification('Javascript Bower Files Imported!'));
 
     });
-    
-    gulp.task('bower-fonts', function(){
-        
+
+    gulp.task('bower-fonts', function () {
+
         var onError = function (err) {
-
-            notify.onError({
-                title: "Laravel Elixir",
-                subtitle: "Bower Files Font Copy Failed!",
-                message: "Bower Files Font Copy Failed! Error: <%= error.message %>",
-                icon: __dirname + '/../icons/fail.png'
-            })(err);
-
+            new notification().error(err, "Bower Files Font Copy Failed! Error: <%= error.message %>");
             this.emit('end');
         };
- 
+
         return gulp.src(bowerfiles({
-                debugging: options.debugging,
-                filter: (/\.(eot|svg|ttf|woff|woff2|otf)$/i)
-            }))
-            .on('error', onError)
-            .pipe(changed(options.font.output))
-            .pipe(gulp.dest(options.font.output))
-            .pipe(new notification('Font Bower Files Imported!'));
+            debugging: options.debugging,
+            filter: options.font.filter
+        }))
+                .on('error', onError)
+                .pipe(ignore.exclude(isInline)) // Exclude inlined images
+                .pipe(changed(options.font.output))
+                .pipe(gulp.dest(options.font.output))
+                .pipe(new notification('Font Bower Files Imported!'));
     });
 
     gulp.task('bower-imgs', function () {
 
         var onError = function (err) {
-
-            notify.onError({
-                title: "Laravel Elixir",
-                subtitle: "Bower Files Images Copy Failed!",
-                message: "Bower Files Images Copy Failed! Error: <%= error.message %>",
-                icon: __dirname + '/../icons/fail.png'
-            })(err);
-
+            new notification().error(err, "Bower Files Images Copy Failed! Error: <%= error.message %>");
             this.emit('end');
         };
 
-        var isInline = function (file) {
-            
-            var fsize = file.stat ? filesize(file.stat.size) : filesize(Buffer.byteLength(String(file.contents)));
-            var fext = file.path.split('.').pop();
-            
-            if (options.debugging)
-            {
-                console.log("Size of file:" + file.path + " (" + 1024*parseFloat(fsize) +" / max="+options.img.maxInlineSize+")");
-            }
-            
-            return options.img.extInline.indexOf(fext) > -1 && 1024*parseFloat(fsize) < options.img.maxInlineSize;
-        }
-
         return gulp.src(bowerfiles({
             debugging: options.debugging,
-            filter: (/\.(png|bmp|gif|jpg|jpeg)$/i)
-            }))
-            .on('error', onError)
-            .pipe(ignore.exclude(isInline)) // Exclude inlined images
-            .pipe(changed(options.img.output))
-            .pipe(gulp.dest(options.img.output))
-            .pipe(new notification('Images Bower Files Imported!'));
+            filter: options.img.filter
+        }))
+                .on('error', onError)
+                .pipe(ignore.exclude(isInline)) // Exclude inlined images
+                .pipe(changed(options.img.output))
+                .pipe(gulp.dest(options.img.output))
+                .pipe(new notification('Images Bower Files Imported!'));
 
     });
 
