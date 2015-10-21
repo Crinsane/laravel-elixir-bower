@@ -11,11 +11,13 @@ var base64 = require('gulp-base64');
 var test = require('gulp-if');
 var ignore = require('gulp-ignore');
 var filesize = require('filesize');
+var rework = require('rework');		 
+var path = require('path');		
+var validator = require('validator');
 
 var task = elixir.Task;
 var config = elixir.config;
 var notification = elixir.Notification;
-
 
 var _ = require('lodash');
 

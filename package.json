@@ -35,7 +35,9 @@
     "gulp-base64" :"^0.1.2",
     "gulp-if" :"^1.2.5",
     "gulp-ignore" :"^1.2.1",
-    "filesize":"^2.0.0"
+    "filesize":"^2.0.0",
+    "rework": "^0.20.2",
+    "validator": "^3.1.0"
   },
   "peerDependencies":{
     "laravel-elixir":"^3.0"
