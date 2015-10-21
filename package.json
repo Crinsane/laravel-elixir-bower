@@ -23,21 +23,23 @@
     "url": "https://github.com/Crinsane/laravel-elixir-bower/issues"
   },
   "dependencies": {
-    "gulp-changed": "^1.1.1",
-    "gulp-concat": "^2.4.1",
-    "gulp-filter": "^1.0.2",
-    "gulp-load-plugins": "^0.7.0",
-    "gulp-minify-css": "^0.3.11",
-    "gulp-notify": "^2.0.0",
-    "gulp-uglify": "^1.0.1",
-    "lodash": "^3.0.1",
-    "main-bower-files": "^2.1.0",
-    "gulp-base64" :"^0.1.2",
-    "gulp-if" :"^1.2.5",
-    "gulp-ignore" :"^1.2.1",
-    "filesize":"^2.0.0",
-    "rework": "^0.20.2",
-    "validator": "^3.1.0"
+    "gulp-changed": "^1.1",
+    "gulp-concat": "^2.4",
+    "gulp-filter": "^1.0",
+    "gulp-load-plugins": "^0.7",
+    "gulp-minify-css": "^0.3",
+    "gulp-notify": "^2.0",
+    "gulp-uglify": "^1.0",
+    "lodash": "^3.0",
+    "main-bower-files": "^2.1",
+    "gulp-base64" :"^0.1",
+    "gulp-if" :"^1.2",
+    "gulp-ignore" :"^1.2",
+    "gulp-rewrite-css":"^0.0",
+    "filesize":"^2.0",
+    "validator": "^4.2",
+    "is-absolute-url":"^2.0"
+    
   },
   "peerDependencies":{
     "laravel-elixir":"^3.0"
