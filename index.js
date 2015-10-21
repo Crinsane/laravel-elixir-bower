@@ -1,5 +1,5 @@
 var gulp = require('gulp');
-var mainBowerFiles = require('main-bower-files');
+var bowerfiles = require('main-bower-files');
 var elixir = require('laravel-elixir');
 var filter = require('gulp-filter');
 var notify = require('gulp-notify');
@@ -65,7 +65,7 @@ elixir.extend('bower', function (options) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles({debugging: options.debugging}))
+        return gulp.src(bowerfiles({debugging: options.debugging}))
             .on('error', onError)
             .pipe(filter('**/*.css'))
             .pipe(test(options.img.maxInlineSize > 0, base64({
@@ -93,7 +93,7 @@ elixir.extend('bower', function (options) {
             this.emit('end');
         };
 
-        return gulp.src(mainBowerFiles({debugging: options.debugging}))
+        return gulp.src(bowerfiles({debugging: options.debugging}))
             .on('error', onError)
             .pipe(filter('**/*.js'))
             .pipe(concat(options.js.file))
@@ -117,7 +117,7 @@ elixir.extend('bower', function (options) {
             this.emit('end');
         };
  
-        return gulp.src(mainBowerFiles({
+        return gulp.src(bowerfiles({
                 debugging: options.debugging,
                 filter: (/\.(eot|svg|ttf|woff|woff2|otf)$/i)
             }))
@@ -154,7 +154,7 @@ elixir.extend('bower', function (options) {
             return options.img.extInline.indexOf(fext) > -1 && 1024*parseFloat(fsize) < options.img.maxInlineSize;
         }
 
-        return gulp.src(mainBowerFiles({
+        return gulp.src(bowerfiles({
             debugging: options.debugging,
             filter: (/\.(png|bmp|gif|jpg|jpeg)$/i)
             }))
