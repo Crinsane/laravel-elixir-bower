@@ -26,10 +26,11 @@ elixir.extend('bower', function (options) {
 
     var options = _.merge({
         debugging: false,
+        flatten: true,
         css: {
             minify: true,
             file: 'vendor.css',
-            extInline: ['gif', 'png' ],
+            extInline: ['gif', 'png'],
             maxInlineSize: 32 * 1024, //max 32k on ie8
             output: config.css.outputFolder ? config.publicPath + '/' + config.css.outputFolder : config.publicPath + '/css'
         },
@@ -88,26 +89,42 @@ elixir.extend('bower', function (options) {
                 return context.targetFile;
             }
 
-            var absolutePath = context.targetFile.split('?').shift();
+            var targetPath = context.targetFile.split(/\?|#/).shift()
 
-            var p = "";
+            if (options.flatten)
+            {
+                targetPath = targetPath.split('/').pop();
+            } else
+            {
+                targetPath = path.relative(opts.base, context.sourceDir + '/' + targetPath);
+            }
+
+            var absolutePath = path.relative(context.destinationDir, targetPath)
 
             if (absolutePath.match(options.font.filter))
-                p = path.relative(context.destinationDir, process.cwd() + '/' + options.font.output + '/' + context.targetFile.split('/').pop());
+                targetPath = path.relative(context.destinationDir, process.cwd() + '/' + options.font.output + '/' + targetPath);
 
             if (absolutePath.match(options.img.filter))
-                p = path.relative(context.destinationDir, process.cwd() + '/' + options.img.output + '/' + context.targetFile.split('/').pop());
+                targetPath = path.relative(context.destinationDir, process.cwd() + '/' + options.img.output + '/' + targetPath);
 
             if (process.platform === 'win32')
-                p = p.replace(/\\/g, '/');
+                targetPath = targetPath.replace(/\\/g, '/');
 
-            return p;
+            if (opts.debugging)
+            {
+                console.log(context.targetFile + " -> " + targetPath);
+            }
+
+            return targetPath;
 
         };
 
+        var opts = {
+            debugging: options.debugging
+        };
 
 
-        return gulp.src(bowerfiles({debugging: options.debugging}))
+        return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
                 .pipe(filter('**/*.css'))
                 .pipe(test(options.css.maxInlineSize > 0, base64({
@@ -121,6 +138,7 @@ elixir.extend('bower', function (options) {
                 .pipe(gulp.dest(options.css.output))
                 .pipe(new notification('CSS Bower Files Imported!'));
 
+
     });
 
     gulp.task('bower-js', function () {
@@ -130,7 +148,11 @@ elixir.extend('bower', function (options) {
             this.emit('end');
         };
 
-        return gulp.src(bowerfiles({debugging: options.debugging}))
+        var opts = {
+            debugging: options.debugging
+        };
+
+        return gulp.src(bowerfiles(opts))
                 .on('error', onError)
                 .pipe(filter('**/*.js'))
                 .pipe(concat(options.js.file))
@@ -147,10 +169,12 @@ elixir.extend('bower', function (options) {
             this.emit('end');
         };
 
-        return gulp.src(bowerfiles({
+        var opts = {
             debugging: options.debugging,
             filter: options.font.filter
-        }))
+        };
+
+        return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
                 .pipe(ignore.exclude(isInline)) // Exclude inlined images
                 .pipe(changed(options.font.output))
@@ -165,10 +189,12 @@ elixir.extend('bower', function (options) {
             this.emit('end');
         };
 
-        return gulp.src(bowerfiles({
+        var opts = {
             debugging: options.debugging,
             filter: options.img.filter
-        }))
+        };
+
+        return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
                 .pipe(ignore.exclude(isInline)) // Exclude inlined images
                 .pipe(changed(options.img.output))
