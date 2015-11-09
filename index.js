@@ -89,8 +89,9 @@ elixir.extend('bower', function (options) {
                 return context.targetFile;
             }
 
-            var targetPath = context.targetFile.split(/\?|#/).shift()
-
+            var targetPath = context.targetFile.split(/\?|#/)[0];
+            var targetQuery = context.targetFile.split(/\?/)[1];
+             
             if (options.flatten)
             {
                 targetPath = targetPath.split('/').pop();
@@ -115,7 +116,7 @@ elixir.extend('bower', function (options) {
                 console.log(context.targetFile + " -> " + targetPath);
             }
 
-            return targetPath;
+            return targetPath + (targetQuery !== undefined ? '?' + targetQuery : '');
 
         };
 
