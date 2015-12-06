@@ -74,7 +74,7 @@ elixir.extend('bower', function (options) {
             console.log("Size of file:" + file.path + " (" + 1024 * parseFloat(fsize) + " / max=" + options.css.maxInlineSize + ")");
 
         return options.css.extInline.indexOf(fext) > -1 && 1024 * parseFloat(fsize) < options.css.maxInlineSize;
-    }
+    };
 
     gulp.task('bower-css', function () {
 
@@ -131,7 +131,7 @@ elixir.extend('bower', function (options) {
                 .pipe(test(options.css.maxInlineSize > 0, base64({
                     extensions: options.css.extInline,
                     maxImageSize: options.css.maxInlineSize, // bytes 
-                    debug: options.debugging,
+                    debug: options.debugging
                 })))
                 .pipe(rewrite({destination: options.css.output, debug: options.debugging, adaptPath: rebase}))
                 .pipe(concat(options.css.file))
