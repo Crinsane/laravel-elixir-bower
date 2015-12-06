@@ -100,7 +100,7 @@ elixir.extend('bower', function (options) {
                 targetPath = path.relative(opts.base, context.sourceDir + '/' + targetPath);
             }
 
-            var absolutePath = path.relative(context.destinationDir, targetPath)
+            var absolutePath = path.relative(context.destinationDir, targetPath);
 
             if (absolutePath.match(options.font.filter))
                 targetPath = path.relative(context.destinationDir, process.cwd() + '/' + options.font.output + '/' + targetPath);
