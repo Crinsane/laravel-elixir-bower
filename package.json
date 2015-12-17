@@ -38,7 +38,8 @@
     "gulp-rewrite-css":"^0.0",
     "filesize":"^2.0",
     "validator": "^4.2",
-    "is-absolute-url":"^2.0"
+    "is-absolute-url":"^2.0",
+    "gulp-load-plugins": "^1.0.0-rc.1"
     
   },
   "peerDependencies":{

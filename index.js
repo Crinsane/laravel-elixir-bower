@@ -1,28 +1,21 @@
 var gulp = require('gulp');
 var bowerfiles = require('main-bower-files');
-var elixir = require('laravel-elixir');
-var filter = require('gulp-filter');
-var notify = require('gulp-notify');
-var minify = require('gulp-minify-css');
-var uglify = require('gulp-uglify');
-var concat = require('gulp-concat');
-var changed = require('gulp-changed');
-var base64 = require('gulp-base64');
-var test = require('gulp-if');
-var ignore = require('gulp-ignore');
-var rewrite = require('gulp-rewrite-css');
+var Elixir = require('laravel-elixir');
+
 var filesize = require('filesize');
 var path = require('path');
 var validator = require('validator');
 var isAbsolute = require('is-absolute-url');
 
-var task = elixir.Task;
-var config = elixir.config;
-var notification = elixir.Notification;
+var task = Elixir.Task;
+var config = Elixir.config;
+var notification = Elixir.Notification;
 
+var $ = require('gulp-load-plugins')();
 var _ = require('lodash');
+  
 
-elixir.extend('bower', function (options) {
+Elixir.extend('bower', function (options) {
 
     var options = _.merge({
         debugging: false,
@@ -91,7 +84,7 @@ elixir.extend('bower', function (options) {
 
             var targetPath = context.targetFile.split(/\?|#/)[0];
             var targetQuery = context.targetFile.split(/\?/)[1];
-             
+
             if (options.flatten)
             {
                 targetPath = targetPath.split('/').pop();
@@ -127,15 +120,15 @@ elixir.extend('bower', function (options) {
 
         return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
-                .pipe(filter('**/*.css'))
-                .pipe(test(options.css.maxInlineSize > 0, base64({
+                .pipe($.filter('**/*.css'))
+                .pipe($.if(options.css.maxInlineSize > 0, $.base64({
                     extensions: options.css.extInline,
                     maxImageSize: options.css.maxInlineSize, // bytes 
                     debug: options.debugging
                 })))
-                .pipe(rewrite({destination: options.css.output, debug: options.debugging, adaptPath: rebase}))
-                .pipe(concat(options.css.file))
-                .pipe(test(options.css.minify, minify()))
+                .pipe($.rewritecss({destination: options.css.output, debug: options.debugging, adaptPath: rebase}))
+                .pipe($.concat(options.css.file))
+                .pipe($.if(options.css.minify, minify()))
                 .pipe(gulp.dest(options.css.output))
                 .pipe(new notification('CSS Bower Files Imported!'));
 
@@ -155,9 +148,9 @@ elixir.extend('bower', function (options) {
 
         return gulp.src(bowerfiles(opts))
                 .on('error', onError)
-                .pipe(filter('**/*.js'))
-                .pipe(concat(options.js.file))
-                .pipe(test(options.js.uglify, uglify()))
+                .pipe($.filter('**/*.js'))
+                .pipe($.concat(options.js.file))
+                .pipe($.if(options.js.uglify, uglify()))
                 .pipe(gulp.dest(options.js.output))
                 .pipe(new notification('Javascript Bower Files Imported!'));
 
@@ -177,8 +170,8 @@ elixir.extend('bower', function (options) {
 
         return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
-                .pipe(ignore.exclude(isInline)) // Exclude inlined images
-                .pipe(changed(options.font.output))
+                .pipe($.ignore.exclude(isInline)) // Exclude inlined images
+                .pipe($.changed(options.font.output))
                 .pipe(gulp.dest(options.font.output))
                 .pipe(new notification('Font Bower Files Imported!'));
     });
@@ -197,8 +190,8 @@ elixir.extend('bower', function (options) {
 
         return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
-                .pipe(ignore.exclude(isInline)) // Exclude inlined images
-                .pipe(changed(options.img.output))
+                .pipe($.ignore.exclude(isInline)) // Exclude inlined images
+                .pipe($.changed(options.img.output))
                 .pipe(gulp.dest(options.img.output))
                 .pipe(new notification('Images Bower Files Imported!'));
 
