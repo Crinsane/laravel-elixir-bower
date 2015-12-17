@@ -150,7 +150,7 @@ Elixir.extend('bower', function (options) {
                 .on('error', onError)
                 .pipe($.filter('**/*.js'))
                 .pipe($.concat(options.js.file))
-                .pipe($.if(options.js.uglify, uglify()))
+                .pipe($.if(options.js.uglify, $.uglify()))
                 .pipe(gulp.dest(options.js.output))
                 .pipe(new notification('Javascript Bower Files Imported!'));
 
