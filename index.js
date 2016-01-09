@@ -126,9 +126,9 @@ Elixir.extend('bower', function (options) {
                     maxImageSize: options.css.maxInlineSize, // bytes 
                     debug: options.debugging
                 })))
-                .pipe($.rewritecss({destination: options.css.output, debug: options.debugging, adaptPath: rebase}))
+                .pipe($.rewriteCss({destination: options.css.output, debug: options.debugging, adaptPath: rebase}))
                 .pipe($.concat(options.css.file))
-                .pipe($.if(options.css.minify, minify()))
+                .pipe($.if(options.css.minify, $.cssnano()))
                 .pipe(gulp.dest(options.css.output))
                 .pipe(new notification('CSS Bower Files Imported!'));
 
@@ -150,7 +150,7 @@ Elixir.extend('bower', function (options) {
                 .on('error', onError)
                 .pipe($.filter('**/*.js'))
                 .pipe($.concat(options.js.file))
-                .pipe($.if(options.js.uglify, $.uglify()))
+                .pipe($.if(options.js.uglify, $.uglify(),$.beautify()))
                 .pipe(gulp.dest(options.js.output))
                 .pipe(new notification('Javascript Bower Files Imported!'));
 
