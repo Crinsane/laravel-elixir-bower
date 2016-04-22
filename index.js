@@ -13,31 +13,31 @@ var notification = Elixir.Notification;
 
 var $ = require('gulp-load-plugins')();
 var _ = require('lodash');
-  
+
 
 Elixir.extend('bower', function (options) {
 
     var options = _.merge({
-        debugging: false,
+        debugging: !config.production,
         flatten: true,
         css: {
-            minify: true,
-            file: 'vendor.css',
+            minify: config.production,
+            outputFile: 'vendor.css',
             extInline: ['gif', 'png'],
             maxInlineSize: 32 * 1024, //max 32k on ie8
-            output: config.css.outputFolder ? config.publicPath + '/' + config.css.outputFolder : config.publicPath + '/css'
+            outputFolder: config.get("public.css.outputFolder")
         },
         js: {
-            uglify: true,
-            file: 'vendor.js',
-            output: config.js.outputFolder ? config.publicPath + '/' + config.js.outputFolder : config.publicPath + '/js'
+            uglify: config.production,
+            outputFile: 'vendor.js',
+            outputFolder: config.get("public.js.outputFolder")
         },
-        font: {
-            output: (config.font && config.font.outputFolder) ? config.publicPath + '/' + config.font.outputFolder : config.publicPath + '/fonts',
+        fonts: {
+            outputFolder: config.get("public.fonts.outputFolder"),
             filter: /\.(eot|svg|ttf|woff|woff2|otf)$/i
         },
-        img: {
-            output: (config.img && config.img.outputFolder) ? config.publicPath + '/' + config.img.outputFolder : config.publicPath + '/imgs',
+        images: {
+            outputFolder: config.get("public.images.outputFolder"),
             filter: /\.(png|bmp|gif|jpg|jpeg)$/i
 
         }
@@ -49,9 +49,9 @@ Elixir.extend('bower', function (options) {
         files.push('bower-css');
     if (options.js !== false)
         files.push('bower-js');
-    if (options.font !== false)
+    if (options.fonts !== false)
         files.push('bower-fonts');
-    if (options.img !== false)
+    if (options.images !== false)
         files.push('bower-imgs');
 
     new task('bower', function () {
@@ -95,11 +95,11 @@ Elixir.extend('bower', function (options) {
 
             var absolutePath = path.relative(context.destinationDir, targetPath);
 
-            if (absolutePath.match(options.font.filter))
-                targetPath = path.relative(context.destinationDir, process.cwd() + '/' + options.font.output + '/' + targetPath);
+            if (absolutePath.match(options.fonts.filter))
+                targetPath = path.relative(context.destinationDir, process.cwd() + '/' + options.fonts.outputFolder + '/' + targetPath);
 
-            if (absolutePath.match(options.img.filter))
-                targetPath = path.relative(context.destinationDir, process.cwd() + '/' + options.img.output + '/' + targetPath);
+            if (absolutePath.match(options.images.filter))
+                targetPath = path.relative(context.destinationDir, process.cwd() + '/' + options.images.outputFolder + '/' + targetPath);
 
             if (process.platform === 'win32')
                 targetPath = targetPath.replace(/\\/g, '/');
@@ -114,22 +114,23 @@ Elixir.extend('bower', function (options) {
         };
 
         var opts = {
-            debugging: options.debugging
+            debugging: options.debugging,
+            filter: '**/*.css'
         };
 
 
         return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
-                .pipe($.filter('**/*.css'))
+                //.pipe($.filter('**/*.css'))
                 .pipe($.if(options.css.maxInlineSize > 0, $.base64({
                     extensions: options.css.extInline,
-                    maxImageSize: options.css.maxInlineSize, // bytes 
+                    maxImageSize: options.css.maxInlineSize, // bytes
                     debug: options.debugging
                 })))
-                .pipe($.rewriteCss({destination: options.css.output, debug: options.debugging, adaptPath: rebase}))
-                .pipe($.concat(options.css.file))
+                .pipe($.rewriteCss({destination: options.css.outputFolder, debug: options.debugging, adaptPath: rebase}))
+                .pipe($.concat(options.css.outputFile))
                 .pipe($.if(options.css.minify, $.cssnano()))
-                .pipe(gulp.dest(options.css.output))
+                .pipe(gulp.dest(options.css.outputFolder))
                 .pipe(new notification('CSS Bower Files Imported!'));
 
 
@@ -143,15 +144,16 @@ Elixir.extend('bower', function (options) {
         };
 
         var opts = {
-            debugging: options.debugging
+            debugging: options.debugging,
+            filter: '**/*.js'
         };
 
         return gulp.src(bowerfiles(opts))
                 .on('error', onError)
-                .pipe($.filter('**/*.js'))
-                .pipe($.concat(options.js.file))
-                .pipe($.if(options.js.uglify, $.uglify(),$.beautify()))
-                .pipe(gulp.dest(options.js.output))
+                //.pipe($.filter('**/*.js'))
+                .pipe($.concat(options.js.outputFile))
+                .pipe($.if(options.js.uglify, $.uglify(), $.beautify()))
+                .pipe(gulp.dest(options.js.outputFolder))
                 .pipe(new notification('Javascript Bower Files Imported!'));
 
     });
@@ -165,14 +167,14 @@ Elixir.extend('bower', function (options) {
 
         var opts = {
             debugging: options.debugging,
-            filter: options.font.filter
+            filter: options.fonts.filter
         };
 
         return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
                 .pipe($.ignore.exclude(isInline)) // Exclude inlined images
-                .pipe($.changed(options.font.output))
-                .pipe(gulp.dest(options.font.output))
+                .pipe($.changed(options.fonts.outputFolder))
+                .pipe(gulp.dest(options.fonts.outputFolder))
                 .pipe(new notification('Font Bower Files Imported!'));
     });
 
@@ -185,14 +187,14 @@ Elixir.extend('bower', function (options) {
 
         var opts = {
             debugging: options.debugging,
-            filter: options.img.filter
+            filter: options.images.filter
         };
 
         return gulp.src(bowerfiles(opts), options.flatten ? null : {base: opts.base})
                 .on('error', onError)
                 .pipe($.ignore.exclude(isInline)) // Exclude inlined images
-                .pipe($.changed(options.img.output))
-                .pipe(gulp.dest(options.img.output))
+                .pipe($.changed(options.images.outputFolder))
+                .pipe(gulp.dest(options.images.outputFolder))
                 .pipe(new notification('Images Bower Files Imported!'));
 
     });
