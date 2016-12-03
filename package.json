@@ -1,34 +1,48 @@
 {
-  "name": "laravel-elixir-bower",
-  "version": "0.1.0",
-  "description": "Laravel Elixir Bower Extension",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "name": "laravel-elixir-bower",
+    "version": "1.2.3",
+    "description": "Laravel Elixir Bower Extension",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "keywords": [
+        "laravel",
+        "elixir",
+        "bower",
+        "gulp"
+    ],
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/Crinsane/laravel-elixir-bower"
+    },
+    "author": "Rob Gloudemans",
+    "license": "MIT",
+    "homepage": "https://github.com/Crinsane/laravel-elixir-bower",
+    "bugs": {
+        "url": "https://github.com/Crinsane/laravel-elixir-bower/issues"
+    },
+    "dependencies": {
+        "filesize": "~3.3.0",
+        "gulp-base64": "~0.1",
+        "gulp-beautify": "~2.0",
+        "gulp-changed": "~1.1",
+        "gulp-concat": "~2.4",
+        "gulp-cssnano": "~2.1.0",
+        "gulp-filter": "~1.0",
+        "gulp-if": "~1.2",
+        "gulp-ignore": "~1.2",
+        "gulp-load-plugins": "~1.2.2",
+        "gulp-minify-css": "~0.3",
+        "gulp-notify": "~2.0",
+        "gulp-rewrite-css": "~0.0",
+        "gulp-uglify": "~1.0",
+        "is-absolute-url": "~2.0",
+        "lodash": "~3.0",
+        "main-bower-files": "~2.11",
+        "validator": "~4.2"
   },
-  "keywords": [
-    "laravel",
-    "elixir",
-    "bower",
-    "gulp"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Crinsane/laravel-elixir-bower"
-  },
-  "author": "Rob Gloudemans",
-  "license": "MIT",
-  "homepage": "https://github.com/Crinsane/laravel-elixir-bower",
-  "bugs": {
-    "url": "https://github.com/Crinsane/laravel-elixir-bower/issues"
-  },
-  "dependencies": {
-    "gulp-concat": "^2.4.1",
-    "gulp-filter": "^1.0.2",
-    "gulp-load-plugins": "^0.7.0",
-    "gulp-minify-css": "^0.3.11",
-    "gulp-notify": "^2.0.0",
-    "gulp-uglify": "^1.0.1",
-    "main-bower-files": "^2.1.0"
+  "peerDependencies":{
+    "laravel-elixir": ">3.0"
   }
 }
