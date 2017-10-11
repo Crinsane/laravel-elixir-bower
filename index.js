@@ -7,69 +7,75 @@ var minify = require('gulp-minify-css');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
 
-elixir.extend('bower', function(cssFile, cssOutput, jsFile, jsOutput) {
+var Task = elixir.Task;
 
-    var config = this;
-    var cssFile = cssFile || 'vendor.css';
-    var jsFile = jsFile || 'vendor.js';
+elixir.extend('bower', function (cssFile, cssOutput, jsFile, jsOutput) {
 
-    gulp.task('bower', ['bower-css', 'bower-js']);
+	var config = this;
+	var cssFile = cssFile || 'vendor.css';
+	var jsFile = jsFile || 'vendor.js';
 
-    gulp.task('bower-css', function () {
-        var onError = function (err) {
-            notify.onError({
-                title: "Laravel Elixir",
-                subtitle: "Bower Files CSS Compilation Failed!",
-                message: "Error: <%= error.message %>",
-                icon: __dirname + '/../icons/fail.png'
-            })(err);
+	new Task('bower', function () {
 
-            this.emit('end');
-        };
+		gulp.task('bower-css', function () {
+			var onError = function (err) {
+				notify.onError({
+					title: "Laravel Elixir",
+					subtitle: "Bower Files CSS Compilation Failed!",
+					message: "Error: <%= error.message %>",
+					icon: __dirname + '/../icons/fail.png'
+				})(err);
 
-        return gulp.src(mainBowerFiles())
-            .on('error', onError)
-            .pipe(filter('**/*.css'))
-            .pipe(concat(cssFile))
-            .pipe(minify())
-            .pipe(gulp.dest(cssOutput || config.cssOutput))
-            .pipe(notify({
-                title: 'Laravel Elixir',
-                subtitle: 'CSS Bower Files Imported!',
-                icon: __dirname + '/../icons/laravel.png',
-                message: ' '
-            }));
+				this.emit('end');
+			};
 
-    });
+			return gulp.src(mainBowerFiles())
+				.on('error', onError)
+				.pipe(filter('**/*.css'))
+				.pipe(concat(cssFile))
+				.pipe(minify())
+				.pipe(gulp.dest(cssOutput || config.cssOutput))
+				.pipe(notify({
+					title: 'Laravel Elixir',
+					subtitle: 'CSS Bower Files Imported!',
+					icon: __dirname + '/../icons/laravel.png',
+					message: ' '
+				}));
 
-    gulp.task('bower-js', function () {
-        var onError = function (err) {
+		});
 
-            notify.onError({
-                title: "Laravel Elixir",
-                subtitle: "Bower Files JS Compilation Failed!",
-                message: "Error: <%= error.message %>",
-                icon: __dirname + '/../icons/fail.png'
-            })(err);
+		gulp.task('bower-js', function () {
+			var onError = function (err) {
 
-            this.emit('end');
-        };
+				notify.onError({
+					title: "Laravel Elixir",
+					subtitle: "Bower Files JS Compilation Failed!",
+					message: "Error: <%= error.message %>",
+					icon: __dirname + '/../icons/fail.png'
+				})(err);
 
-        return gulp.src(mainBowerFiles())
-            .on('error', onError)
-            .pipe(filter('**/*.js'))
-            .pipe(concat(jsFile))
-            .pipe(uglify())
-            .pipe(gulp.dest(jsOutput || config.jsOutput))
-            .pipe(notify({
-                title: 'Laravel Elixir',
-                subtitle: 'Javascript Bower Files Imported!',
-                icon: __dirname + '/../icons/laravel.png',
-                message: ' '
-            }));
+				this.emit('end');
+			};
 
-    });
+			return gulp.src(mainBowerFiles())
+				.on('error', onError)
+				.pipe(filter('**/*.js'))
+				.pipe(concat(jsFile))
+				.pipe(uglify())
+				.pipe(gulp.dest(jsOutput || config.jsOutput))
+				.pipe(notify({
+					title: 'Laravel Elixir',
+					subtitle: 'Javascript Bower Files Imported!',
+					icon: __dirname + '/../icons/laravel.png',
+					message: ' '
+				}));
 
-    return this.queueTask('bower');
+		});
+
+		gulp.task('bower', ['bower-css', 'bower-js']);
+
+		return gulp.start('bower');
+
+	});
 
 });
